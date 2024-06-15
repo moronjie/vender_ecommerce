@@ -23,3 +23,4 @@ mongoose.connection.on('error', () => {console.log("something is wrong. Check yo
 mongoose.connection.once('open', () => {
     app.listen(port, () => { console.log(`app is running on port ${port}`)})
 })
+

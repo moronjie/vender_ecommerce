@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
 
 export const connect = (url:string) => {
-    return mongoose.connect(url, { dbName: "mernBlog" });
+    return mongoose.connect(url, { dbName: "vendor" });
 }

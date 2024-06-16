@@ -15,7 +15,7 @@ export const errorHandler = (err: CustomError, req: Request, res: Response, next
     });
   };
 
-export const customError = (statusCode:number, message:string) => {
+export const customError = (message:string, statusCode:number) => {
     const error = new Error() as Error & { statusCode: number };
     error.statusCode = statusCode
     error.message = message

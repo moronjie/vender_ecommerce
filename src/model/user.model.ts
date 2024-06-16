@@ -1,7 +1,27 @@
 import Joi, { required } from "joi";
-import mongoose  from "mongoose";
+import mongoose, { Document } from 'mongoose';
+import bcrypt from "bcrypt"
+import { customError } from "../middleware/errorHandler";
 
-const userSchema = new mongoose.Schema({
+interface userInterface extends Document {
+    name: string,
+    email: string,
+    password: string,
+    role: string,
+    phone: string,
+    isActive: boolean,
+    address: {
+        street: string,
+        city: string,
+        state: string,
+        country: string,
+        zip: string
+    }
+    createdAt: Date,
+    updatedAt: Date
+}
+
+const userSchema = new mongoose.Schema<userInterface>({
     name:{
         type: String,
         required: true
@@ -44,6 +64,27 @@ const userSchema = new mongoose.Schema({
         }
     }
 }, {timestamps: true})
+
+userSchema.pre<userInterface>("save", async function (next) {
+    try {
+        if (!this.isModified("password")) return next()
+
+        const salt = await bcrypt.genSalt(10)
+        
+        this.password = await bcrypt.hash(this.password, salt)
+        next()
+    } catch (err: any) {
+        customError(err.message, 500)
+    }
+})
+
+userSchema.methods.comparePassword = async function (password: string): Promise<boolean | undefined> {
+    try {
+        return await bcrypt.compare(password, this.password)
+    } catch (err: any) {
+        customError(err.message, 401)
+    }
+}
 
 
 export const User = mongoose.model('User', userSchema)

@@ -1,5 +1,5 @@
 import Joi, { required } from "joi";
-import mongoose, { Document } from 'mongoose';
+import mongoose, { Document, CallbackWithoutResultAndOptionalError } from 'mongoose';
 import bcrypt from "bcrypt"
 import { customError } from "../middleware/errorHandler";
 
@@ -65,7 +65,7 @@ const userSchema = new mongoose.Schema<userInterface>({
     }
 }, {timestamps: true})
 
-userSchema.pre<userInterface>("save", async function (next) {
+userSchema.pre("save", async function (this: userInterface, next: CallbackWithoutResultAndOptionalError): Promise<void> {
     try {
         if (!this.isModified("password")) return next()
 

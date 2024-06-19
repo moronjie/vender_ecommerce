@@ -2,6 +2,27 @@ import { number, ref, required } from "joi";
 import mongoose from "mongoose";
 import { Vendor } from "./vendor.model";
 
+const Productvariation = new mongoose.Schema({
+    size: {
+        type: String,
+        required: true
+    },
+    color: {
+        type: String
+    },
+    quantity: {
+        type: Number,
+        min: 0
+    },
+    price: {
+        type: number,
+        required: true,
+        default: 0
+    }
+},{
+    _id: false
+})
+
 const productsSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -25,17 +46,12 @@ const productsSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Categories'
     }, 
-    price: {
-        type: number,
-        required: true,
-        default: 0
-    },
     brand: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Brand'
     },
     image: [{type: String, required: true}],
-    variation: [],
+    variation: [Productvariation],
     Averagerating:{
         type: number
     },

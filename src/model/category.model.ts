@@ -8,6 +8,8 @@ const categorySchema = new mongoose.Schema({
     description: {
         type: String
     }
+}, {
+    timestamps: true
 })
 
 export const Category = mongoose.model("Category", categorySchema)

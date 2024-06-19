@@ -12,6 +12,8 @@ const brandSchema = new mongoose.Schema({
     logo: {
         type: String
     }
+}, {
+    timestamps: true
 })
 
 export const Brand = mongoose.model("Brand", brandSchema)

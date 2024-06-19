@@ -9,6 +9,8 @@ const wishListSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Products'
     }
+},{
+    timestamps: true
 })
 
 export const WishList = mongoose.model("WishList", wishListSchema)

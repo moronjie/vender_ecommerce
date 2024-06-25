@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { customError } from '../middleware/errorHandler';
-import { User, validateUserSignUp } from '../model/user.model';
+import { User, validateUserLogIn, validateUserSignUp } from '../model/user.model';
 
 export const signUp = async (
   req: Request,
@@ -23,7 +23,8 @@ export const signUp = async (
     const user = await User.create({ name, email, password });
     res.status(201).json({
       success: true,
-      message: "user created successfully"
+      message: "user created successfully",
+      data: ""
     });
 
   } catch (error: any) {
@@ -33,7 +34,21 @@ export const signUp = async (
 
 export const signIn = async (req: Request, res: Response, next:NextFunction) => {
     try {
+        const {error} = validateUserLogIn(req.body)
+        if (error) return next(customError(error.message, 400))
+
+        const user = await User.findOne({email: req.body.email})
+
+        if (!user) return next(customError("user does not exist", 404))
+        if (!user.comparePassword(req.body.password)) return next(customError("password is incorrect", 400))
+
+        const {password, ...data} = user.toJSON()
         
+        res.status(200).json({
+            success: true,
+            message: "user logged in successfully",
+            data: data
+        })
     } catch (error:any) {
         next(customError(error.message, 500))
         

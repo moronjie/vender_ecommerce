@@ -1,11 +1,11 @@
 import dotenv from "dotenv"
 import config from 'config';
 import express, {Express} from "express"
-import { middlewares } from "./setups/middleware.startup"
+import { middlewares } from "./startups/middleware.startup"
+import { routesFunctions } from "./startups/routes.app";
 import { errorHandler } from "./middleware/errorHandler";
 import { connect } from "./model/connect";
 import mongoose from "mongoose";
-import { routesFunctions } from "./setups/routes.app";
 
 dotenv.config()
 const app = express()

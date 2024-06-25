@@ -19,6 +19,7 @@ interface userInterface extends Document {
     }
     createdAt: Date,
     updatedAt: Date
+    comparePassword(password: string): Promise<boolean>;
 }
 
 const userSchema = new mongoose.Schema<userInterface>({

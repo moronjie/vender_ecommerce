@@ -2,10 +2,8 @@ import { Request, Response, NextFunction } from "express"
 import jwt from "jsonwebtoken"
 import { customError } from "./errorHandler"
 import { User, userInterface } from "../model/user.model"
+import { AuthReq } from "../types"
 
-interface AuthReq extends Request {
-    user: userInterface
-}
 
 export const auth = async (req: AuthReq, res: Response, next: NextFunction) => {
     if(!req.headers.authorization) return customError("you are not authorized", 401)
@@ -17,12 +15,13 @@ export const auth = async (req: AuthReq, res: Response, next: NextFunction) => {
         const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as { _id: string }
         if (!decoded) return customError("you are not authorized", 401)
     
-        req.user = await User.findById(decoded._id) as userInterface
+        req.user = await User.findById(decoded._id).select('-password') as userInterface
         if (!req.user) return customError("User not found", 404);
     
         next()
-    } catch (err: any) {
-        next(customError(err.message, 500));
+    } catch (err) {
+        const error = err as Error
+        next(customError(error.message, 500));
     }
 
 }

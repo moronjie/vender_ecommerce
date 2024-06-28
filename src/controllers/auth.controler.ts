@@ -28,7 +28,8 @@ export const signUp = async (
       data: ""
     });
 
-  } catch (error: any) {
+  } catch (err) {
+    const error = err as Error
     next(customError(error.message, 500));
   }
 };
@@ -53,7 +54,8 @@ export const signIn = async (req: Request, res: Response, next:NextFunction) => 
             data: data,
             token: token
         })
-    } catch (error:any) {
+    } catch (err) {
+        const error = err as Error
         next(customError(error.message, 500))
         
     }
@@ -62,7 +64,8 @@ export const signIn = async (req: Request, res: Response, next:NextFunction) => 
 export const forgotPassword = async (req: Request, res: Response, next: NextFunction) => {
     try {
         
-    } catch (error:any) {
+    } catch (err) {
+        const error = err as Error
         next(customError(error.message, 500))
         
     }
@@ -71,7 +74,8 @@ export const forgotPassword = async (req: Request, res: Response, next: NextFunc
 export const resetPassword = async (req: Request, res: Response, next: NextFunction) => {
     try {
         
-    } catch (error:any) {
+    } catch (err) {
+        const error = err as Error
         next(customError(error.message, 500))
         
     }

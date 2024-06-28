@@ -3,7 +3,7 @@ import mongoose, { Document, CallbackWithoutResultAndOptionalError } from 'mongo
 import bcrypt from "bcrypt"
 import { customError } from "../middleware/errorHandler";
 
-interface userInterface extends Document {
+export interface userInterface extends Document {
     name: string,
     email: string,
     password: string,
@@ -19,7 +19,7 @@ interface userInterface extends Document {
     }
     createdAt: Date,
     updatedAt: Date
-    comparePassword(password: string): Promise<boolean>;
+    comparePassword(password: string): Promise<boolean | undefined>;
 }
 
 const userSchema = new mongoose.Schema<userInterface>({
@@ -88,7 +88,7 @@ userSchema.methods.comparePassword = async function (password: string): Promise<
 }
 
 
-export const User = mongoose.model('User', userSchema)
+export const User = mongoose.model<userInterface>('User', userSchema)
 
 export const validateUserSignUp = (data: unknown) => {
     const schema = Joi.object({

@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { customError } from '../middleware/errorHandler';
 import { User, validateUserLogIn, validateUserSignUp } from '../model/user.model';
+import jwt from 'jsonwebtoken';
 
 export const signUp = async (
   req: Request,
@@ -42,12 +43,15 @@ export const signIn = async (req: Request, res: Response, next:NextFunction) => 
         if (!user) return next(customError("user does not exist", 404))
         if (!user.comparePassword(req.body.password)) return next(customError("password is incorrect", 400))
 
+        const token = jwt.sign({_id: user._id}, process.env.JWT_SECRET as string, {expiresIn: "7d"})
+
         const {password, ...data} = user.toJSON()
         
         res.status(200).json({
             success: true,
             message: "user logged in successfully",
-            data: data
+            data: data,
+            token: token
         })
     } catch (error:any) {
         next(customError(error.message, 500))

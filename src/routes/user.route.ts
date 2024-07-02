@@ -1,5 +1,7 @@
 import { Router } from "express";
 import { forgotPassword, resetPassword, signIn, signUp } from "../controllers/auth.controler";
+import { deleteUser, getASingleUser, getAllUsers, updateUser } from "../controllers/user.controler";
+import { authUser } from "../middleware/jwt.auth";
 
 const router = Router()
 
@@ -8,6 +10,10 @@ router.post('/signin', signIn)
 router.post('/forgot-password', forgotPassword)
 router.post('/reset-password', resetPassword)
 
-//get users 
+router.get('/users', getAllUsers)
+router.get('/users/:_id', getASingleUser)
+
+router.put('/users/:_id', authUser, updateUser)
+router.delete('/users/:_id', authUser, deleteUser)
 
 export default router

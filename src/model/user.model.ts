@@ -4,6 +4,7 @@ import bcrypt from "bcrypt"
 import { customError } from "../middleware/errorHandler";
 
 export interface userInterface extends Document {
+    _id: mongoose.Types.ObjectId,
     name: string,
     email: string,
     password: string,

@@ -5,19 +5,22 @@ import { User, userInterface } from "../model/user.model"
 import { AuthReq } from "../types"
 
 
-export const auth = async (req: AuthReq, res: Response, next: NextFunction) => {
-    if(!req.headers.authorization) return customError("you are not authorized", 401)
+export const authUser = async (req: AuthReq, res: Response, next: NextFunction) => {
+    if(!req.headers.authorization) return next(customError("you are not authorized", 401))
 
     const token = req.headers.authorization?.replace("Bearer ", "")
-    if (!token) return customError("you are not authorized", 401)
+    if (!token) return next(customError("you are not authorized", 401))
 
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as { _id: string }
-        if (!decoded) return customError("you are not authorized", 401)
+        if (!decoded) return next(customError("you are not authorized", 401))
     
-        req.user = await User.findById(decoded._id).select('-password') as userInterface
-        if (!req.user) return customError("User not found", 404);
-    
+        const user = (await User.findById(decoded._id)) as userInterface
+        if (!user) return next(customError("User not found", 404))
+        user.password = ''
+
+        req.user = user
+
         next()
     } catch (err) {
         const error = err as Error

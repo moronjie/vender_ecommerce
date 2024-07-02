@@ -1,4 +1,4 @@
-import { ref } from "joi";
+import Joi, { ref } from "joi";
 import mongoose from "mongoose";
 
 const subscriptionSchema = new mongoose.Schema({
@@ -53,3 +53,24 @@ const vendorSchema = new mongoose.Schema({
 })
 
 export const Vendor = mongoose.model('Vendor', vendorSchema)
+
+const validateSubscriptionSchema = Joi.object({
+    plan: Joi.string().valid('basic', 'premium').default('basic'),
+    startDate: Joi.date(),
+    endDate: Joi.date(),
+    isActive: Joi.boolean().default(false)
+});
+
+const validateVendorSchema = Joi.object({
+    user: Joi.string().required(),
+    storeName: Joi.string().required(),
+    storeDiscription: Joi.string().required(),
+    storeImg: Joi.string().uri(),
+    isVerified: Joi.boolean().default(false),
+    product: Joi.array().items(Joi.string().required()),
+    subscription: validateSubscriptionSchema
+});
+
+export const validateVendor = (data: unknown) => {
+    return validateVendorSchema.validate(data);
+};

@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { customError } from "../middleware/errorHandler";
 import { Vendor, validateVendor } from "../model/vendor.model";
+import { AuthReq } from "../types";
 
 //create controller 
 export const createVendor = async (req: Request, res: Response, next: NextFunction) =>{
@@ -25,7 +26,7 @@ export const createVendor = async (req: Request, res: Response, next: NextFuncti
 //get all controller 
 export const getAllVendors = async (req: Request, res: Response, next: NextFunction) =>{
     try {
-        const vendors = await Vendor.find()
+        const vendors = await Vendor.find().populate("user", "-password")
         res.status(200).json({
             success: true,
             message: "successfully",
@@ -40,7 +41,7 @@ export const getAllVendors = async (req: Request, res: Response, next: NextFunct
 //get one controller 
 export const getSingleVendor = async (req: Request, res: Response, next: NextFunction) =>{
     try {
-        const vendor = await Vendor.findById({_id: req.params.id})
+        const vendor = await Vendor.findById({_id: req.params.id}).populate("user", "-password")
         res.status(200).json({
             success: true,
             message: "successfully",
@@ -53,9 +54,23 @@ export const getSingleVendor = async (req: Request, res: Response, next: NextFun
 }
 
 //update controller 
-export const updateVendor = async (req: Request, res: Response, next: NextFunction) =>{
+export const updateVendor = async (req: AuthReq, res: Response, next: NextFunction) =>{
     try {
-        
+        const vendor = await Vendor.findById(req.params.id).populate("user")
+
+        if(req.user && req.user._id !== vendor?.user._id) return next(customError("you are not authorized to update this user", 401))
+
+        const {error} = validateVendor(req.body)
+        if (error) return next(customError(error.message, 400))
+
+        const updateVendor = await Vendor.findByIdAndUpdate(req.params.id, req.body, {new: true})
+
+        res.status(200).json({
+            success: true,
+            message: "successfully",
+            data: updateVendor
+        })
+
     } catch (err) {
         const error = err as Error
         next(customError(error.message, 500))
@@ -63,9 +78,18 @@ export const updateVendor = async (req: Request, res: Response, next: NextFuncti
 }
 
 //delete controller 
-export const deleteVendor = async (req: Request, res: Response, next: NextFunction) =>{
+export const deleteVendor = async (req: AuthReq, res: Response, next: NextFunction) =>{
     try {
+        const vendor = await Vendor.findById(req.params.id).populate("user")
+
+        if(req.user && req.user._id !== vendor?.user._id) return next(customError("you are not authorized to update this user", 401))
         
+        await Vendor.findByIdAndDelete(req.params.id)
+
+        res.status(200).json({
+            success: true,
+            message: "successfully",
+        })
     } catch (err) {
         const error = err as Error
         next(customError(error.message, 500))

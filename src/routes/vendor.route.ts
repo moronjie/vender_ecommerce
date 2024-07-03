@@ -1,4 +1,4 @@
-import { NextFunction, Router, Response } from "express";
+import { Router} from "express";
 import { authUser } from "../middleware/jwt.auth";
 import { createVendor, deleteVendor, getAllVendors, updateVendor } from "../controllers/vendor.controller";
 import { getASingleUser } from "../controllers/user.controler";

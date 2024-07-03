@@ -1,6 +1,5 @@
-import { number, ref, required } from "joi";
+import Joi, { number, ref, required } from "joi";
 import mongoose from "mongoose";
-import { Vendor } from "./vendor.model";
 
 const Productvariation = new mongoose.Schema({
     size: {
@@ -15,7 +14,7 @@ const Productvariation = new mongoose.Schema({
         min: 0
     },
     price: {
-        type: number,
+        type: Number,
         required: true,
         default: 0
     }
@@ -32,7 +31,7 @@ const productsSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    Vendor: {
+    vendor: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Vendor',
         required: true
@@ -53,10 +52,10 @@ const productsSchema = new mongoose.Schema({
     image: [{type: String, required: true}],
     variation: [Productvariation],
     Averagerating:{
-        type: number
+        type: Number
     },
     rating: {
-        type: number
+        type: Number
     },
     reviews: [{
         type: mongoose.Schema.Types.ObjectId,
@@ -67,3 +66,29 @@ const productsSchema = new mongoose.Schema({
 })
 
 export const Products = mongoose.model('Products', productsSchema)
+
+
+const productVariationSchema = Joi.object({
+    size: Joi.string().required(),
+    color: Joi.string(),
+    quantity: Joi.number().min(0),
+    price: Joi.number().required().default(0)
+})
+
+const productsSchemaVal = Joi.object({
+    name: Joi.string().required(),
+    discription: Joi.string().required(),
+    vendor: Joi.string().required(),
+    category: Joi.string().required(),
+    subcategory: Joi.string(),
+    brand: Joi.string(),
+    image: Joi.array().items(Joi.string().required()).required(),
+    variation: Joi.array().items(productVariationSchema),
+    Averagerating: Joi.number(),
+    rating: Joi.number(),
+    reviews: Joi.array().items(Joi.string())
+})
+
+export const validateProduct = (data: unknown) => {
+    return productsSchemaVal.validate(data)
+}

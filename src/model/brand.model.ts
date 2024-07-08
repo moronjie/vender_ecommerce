@@ -1,4 +1,4 @@
-import { required } from "joi"
+import Joi, { required } from "joi"
 import mongoose from "mongoose"
 
 const brandSchema = new mongoose.Schema({
@@ -17,3 +17,13 @@ const brandSchema = new mongoose.Schema({
 })
 
 export const Brand = mongoose.model("Brand", brandSchema)
+
+export const validateBrand = (data: unknown) => {
+    const schema = Joi.object({
+        name: required(),
+        description: required(),
+        logo: required()
+    })
+
+    return schema.validate(data)
+}

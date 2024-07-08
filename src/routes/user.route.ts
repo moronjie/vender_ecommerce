@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { forgotPassword, resetPassword, signIn, signUp } from "../controllers/auth.controler";
-import { deleteUser, getASingleUser, getAllUsers, updateUser } from "../controllers/user.controler";
+import { forgotPassword, resetPassword, signIn, signUp } from "../controllers/auth.controller";
+import { deleteUser, getASingleUser, getAllUsers, updateUser } from "../controllers/user.controller";
 import { authUser } from "../middleware/jwt.auth";
 
 const router = Router()

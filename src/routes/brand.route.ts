@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { authUser } from "../middleware/jwt.auth";
-import { createBrand, deleteBrand, getBrand, getBrands, updateBrand } from "../controllers/brand.controler";
+import { createBrand, deleteBrand, getBrand, getBrands, updateBrand } from "../controllers/brand.controller";
 
 const 
 router = Router()

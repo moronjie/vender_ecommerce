@@ -25,7 +25,7 @@ export const createWishList = async (req: Request, res: Response, next: NextFunc
 //get wishlist controller 
 export const getWishLists = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const wishlist = await WishList.find()
+        const wishlist = await WishList.find().populate("user", "-password").populate("products")
         res.status(201).json({
             success: true,
             message: "wishlist fetched successfully",
@@ -40,7 +40,7 @@ export const getWishLists = async (req: Request, res: Response, next: NextFuncti
 //get wishlist controller 
 export const getWishList = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const wishlist = await WishList.findById(req.params.id)
+        const wishlist = await WishList.findById(req.params.id).populate("user", "-password").populate("products")
 
         res.status(201).json({
             success: true,

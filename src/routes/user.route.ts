@@ -10,10 +10,10 @@ router.post('/signin', signIn)
 router.post('/forgot-password', forgotPassword)
 router.post('/reset-password', resetPassword)
 
-router.get('/users', getAllUsers)
-router.get('/users/:_id', getASingleUser)
+router.get('/', getAllUsers)
+router.get('/:id', getASingleUser)
 
-router.put('/users/:_id', authUser, updateUser)
-router.delete('/users/:_id', authUser, deleteUser)
+router.put('/:id', authUser, updateUser)
+router.delete('/:id', authUser, deleteUser)
 
 export default router

@@ -1,5 +1,5 @@
 import dotenv from "dotenv"
-import config from 'config';
+import config from './config'; 
 import express, {Express} from "express"
 import { middlewares } from "./startups/middleware.startup"
 import { routesFunctions } from "./startups/routes.app";
@@ -10,7 +10,7 @@ import mongoose from "mongoose";
 dotenv.config()
 const app = express()
 
-const port = config.get<number>('port')
+const port = config.port
 
 middlewares(app)
 

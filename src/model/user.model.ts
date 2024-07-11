@@ -96,6 +96,7 @@ export const validateUserSignUp = (data: unknown) => {
         name: Joi.string().required(),
         email: Joi.string().required(),
         password: Joi.string().min(8).required(),
+        confirmPassword: Joi.ref('password'),
         role: Joi.string(),
         phone: Joi.string().max(20),
         isActive: Joi.boolean(),

@@ -1,7 +1,7 @@
 import Joi, { ref } from "joi";
 import mongoose from "mongoose";
 
-const subscriptionSchema = new mongoose.Schema({
+const subscriptionSchema = {
     plan: {
         type: String,
         enum: ['basic', 'premium'],
@@ -9,16 +9,18 @@ const subscriptionSchema = new mongoose.Schema({
     },
     startDate: {
         type: Date,
+        default: Date.now
     },
     endDate: {
-        type: Date
+        type: Date,
+        default: Date.now
     },
     isActive: {
         type: Boolean,
         default: false
     },
 
-})
+}
 
 
 const vendorSchema = new mongoose.Schema({
@@ -42,11 +44,11 @@ const vendorSchema = new mongoose.Schema({
         type: Boolean,
         default: false
     },
-    product: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Product',
-        required: true
-    }], 
+    // product: [{
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref: 'Product',
+    //     required: true
+    // }], 
     subscription: subscriptionSchema
 }, {
     timestamps: true
@@ -67,7 +69,7 @@ const validateVendorSchema = Joi.object({
     storeDiscription: Joi.string().required(),
     storeImg: Joi.string().uri(),
     isVerified: Joi.boolean().default(false),
-    product: Joi.array().items(Joi.string().required()),
+    // product: Joi.array().items(Joi.string().required()),
     subscription: validateSubscriptionSchema
 });
 

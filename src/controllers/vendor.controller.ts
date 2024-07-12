@@ -41,7 +41,10 @@ export const getAllVendors = async (req: Request, res: Response, next: NextFunct
 //get one controller 
 export const getSingleVendor = async (req: Request, res: Response, next: NextFunction) =>{
     try {
-        const vendor = await Vendor.findById({_id: req.params.id}).populate("user", "-password")
+        const vendor = await Vendor.findById(req.params.id).populate("user", "-password")
+
+        if(!vendor) return next(customError("vendor not found", 404))
+
         res.status(200).json({
             success: true,
             message: "successfully",
@@ -58,10 +61,7 @@ export const updateVendor = async (req: AuthReq, res: Response, next: NextFuncti
     try {
         const vendor = await Vendor.findById(req.params.id).populate("user")
 
-        if(req.user && req.user._id !== vendor?.user._id) return next(customError("you are not authorized to update this user", 401))
-
-        const {error} = validateVendor(req.body)
-        if (error) return next(customError(error.message, 400))
+        if(req.user && req.user._id.toString() !== vendor?.user._id.toString()) return next(customError("you are not authorized to update this user", 401))
 
         const updateVendor = await Vendor.findByIdAndUpdate(req.params.id, req.body, {new: true})
 
@@ -82,8 +82,8 @@ export const deleteVendor = async (req: AuthReq, res: Response, next: NextFuncti
     try {
         const vendor = await Vendor.findById(req.params.id).populate("user")
 
-        if(req.user && req.user._id !== vendor?.user._id) return next(customError("you are not authorized to update this user", 401))
-        
+        if(req.user && req.user._id.toString() !== vendor?.user._id.toString()) return next(customError("you are not authorized to update this user", 401))
+
         await Vendor.findByIdAndDelete(req.params.id)
 
         res.status(200).json({

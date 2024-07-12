@@ -1,7 +1,6 @@
 import { Router} from "express";
 import { authUser } from "../middleware/jwt.auth";
-import { createVendor, deleteVendor, getAllVendors, updateVendor } from "../controllers/vendor.controller";
-import { getASingleUser } from "../controllers/user.controller";
+import { createVendor, deleteVendor, getAllVendors, getSingleVendor, updateVendor } from "../controllers/vendor.controller";
 
 const router = Router()
 
@@ -12,7 +11,7 @@ router.post("/", authUser, createVendor)
 router.get("/", getAllVendors)
 
 //get single vendor
-router.get("/:id", getASingleUser)
+router.get("/:id", getSingleVendor)
 
 //update vendor
 router.put("/:id", authUser, updateVendor)

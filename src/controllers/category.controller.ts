@@ -45,6 +45,8 @@ export const getCategory = async (req: Request, res: Response, next: NextFunctio
     try {
         const category = await Category.findById(req.params.id)
 
+        if(!category) return next(customError("category not found", 404))
+
         res.status(201).json({
             success: true,
             message: "category fetched successfully",
@@ -60,15 +62,18 @@ export const getCategory = async (req: Request, res: Response, next: NextFunctio
 // update category controller 
 export const updateCategory = async (req: AuthReq, res: Response, next: NextFunction) => {
     try {
-        const {error} = validateCategory(req.body)
-        if (error) return customError(error.message, 400)
+        // const {error} = validateCategory(req.body)
+        // if (error) return customError(error.message, 400)
+        const category = await Category.findById(req.params.id)
 
-        const category = await Category.findByIdAndUpdate(req.params.id, req.body, {new: true})
+        if(!category) return next(customError("category not found", 404))
+
+        const UpdatedCategory = await Category.findByIdAndUpdate(req.params.id, req.body, {new: true})
 
         res.status(201).json({
             success: true,
             message: "category update successfully",
-            data: category
+            data: UpdatedCategory
         })
     } catch (err) {
         const error = err as Error
@@ -79,6 +84,10 @@ export const updateCategory = async (req: AuthReq, res: Response, next: NextFunc
 // delete category controller 
 export const deleteCategory = async (req: AuthReq, res: Response, next: NextFunction) => {
     try {
+        const category = await Category.findById(req.params.id)
+
+        if(!category) return next(customError("category not found", 404))
+            
         await Category.findByIdAndDelete(req.params.id)
         res.status(201).json({
             success: true,

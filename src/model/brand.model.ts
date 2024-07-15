@@ -20,9 +20,9 @@ export const Brand = mongoose.model("Brand", brandSchema)
 
 export const validateBrand = (data: unknown) => {
     const schema = Joi.object({
-        name: required(),
-        description: required(),
-        logo: required()
+        name: Joi.string().required(),
+        description: Joi.string(),
+        logo: Joi.string()
     })
 
     return schema.validate(data)

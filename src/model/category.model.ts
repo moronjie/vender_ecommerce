@@ -17,8 +17,8 @@ export const Category = mongoose.model("Category", categorySchema)
 
 export const validateCategory = (data: unknown) => {
     const schema = Joi.object({
-        name: required(),
-        description: required()
+        name: Joi.string().required(),
+        description: Joi.string()
     })
 
     return schema.validate(data)

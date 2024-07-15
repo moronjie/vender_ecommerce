@@ -31,9 +31,8 @@ export const getProducts = async (req: Request, res: Response, next: NextFunctio
         const products = await Products.find()
         .populate("vendor")
         .populate("category")
-        .populate("subcategory")
         .populate("brand")
-        .populate("reviews")
+        // .populate("reviews")
 
         res.status(201).json({
             success: true,
@@ -54,7 +53,9 @@ export const getProduct = async (req: Request, res: Response, next: NextFunction
         .populate("category")
         .populate("subcategory")
         .populate("brand")
-        .populate("reviews")
+        // .populate("reviews")
+
+        if(!product) return next(customError("product not found", 404))
 
         res.status(201).json({
             success: true,
@@ -71,15 +72,22 @@ export const getProduct = async (req: Request, res: Response, next: NextFunction
 // update product controller 
 export const updateProduct = async (req: AuthReq, res: Response, next: NextFunction) => {
     try {
-        const {error} = validateProduct(req.body)
-        if (error) return customError(error.message, 400)
+        // const {error} = validateProduct(req.body)
+        // if (error) return customError(error.message, 400)
 
-        const product = await Products.findByIdAndUpdate(req.params.id, req.body, {new: true})
+        const product = await Products.findById(req.params.id).populate('vendor');
+
+        if(!product) return next(customError("product not found", 404))
+
+        // const userId = product?.vendor?.user.toString();    
+        // if(req.user && req.user._id.toString() !== userId) return next(customError("you are not authorized to update this product", 401))
+
+        const updateProduct = await Products.findByIdAndUpdate(req.params.id, req.body, {new: true})
 
         res.status(201).json({
             success: true,
             message: "product update successfully",
-            data: product
+            data: updateProduct
         })
     } catch (err) {
         const error = err as Error

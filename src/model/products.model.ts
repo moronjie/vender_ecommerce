@@ -38,12 +38,12 @@ const productsSchema = new mongoose.Schema({
     },
     category: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Categories',
+        ref: 'Category',
         required: true
     }, 
     subcategory: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Categories'
+        ref: 'Category'
     }, 
     brand: {
         type: mongoose.Schema.Types.ObjectId,

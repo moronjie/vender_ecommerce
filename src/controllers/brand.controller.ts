@@ -44,6 +44,7 @@ export const getBrands = async (req: Request, res: Response, next: NextFunction)
 export const getBrand = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const brand = await Brand.findById(req.params.id)
+        if(!brand) return next(customError("brand not found", 404))
 
         res.status(201).json({
             success: true,
@@ -60,15 +61,19 @@ export const getBrand = async (req: Request, res: Response, next: NextFunction) 
 // update brand controller 
 export const updateBrand = async (req: AuthReq, res: Response, next: NextFunction) => {
     try {
-        const {error} = validateBrand(req.body)
-        if (error) return customError(error.message, 400)
+        // const {error} = validateBrand(req.body)
+        // if (error) return customError(error.message, 400)
 
-        const brand = await Brand.findByIdAndUpdate(req.params.id, req.body, {new: true})
+        const brand = await Brand.findById(req.params.id)
+
+        if(!brand) return next(customError("brand not found", 404))
+
+        const updateBrand = await Brand.findByIdAndUpdate(req.params.id, req.body, {new: true})
 
         res.status(201).json({
             success: true,
             message: "brand update successfully",
-            data: brand
+            data: updateBrand
         })
     } catch (err) {
         const error = err as Error
@@ -79,6 +84,10 @@ export const updateBrand = async (req: AuthReq, res: Response, next: NextFunctio
 // delete brand controller 
 export const deleteBrand = async (req: AuthReq, res: Response, next: NextFunction) => {
     try {
+        const brand = await Brand.findById(req.params.id)
+
+        if(!brand) return next(customError("brand not found", 404))
+
         await Brand.findByIdAndDelete(req.params.id)
         res.status(201).json({
             success: true,

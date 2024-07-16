@@ -88,3 +88,44 @@ const orderSchema = new mongoose.Schema({
 })
 
 export const Order = mongoose.model("Order", orderSchema)
+
+const Joi = require('joi');
+
+const orderItemSchemaJoi = Joi.object({
+    product: Joi.string().required(),
+    color: Joi.string().required(),
+    size: Joi.string().required(),
+    quantity: Joi.number().min(1).required(),
+    price: Joi.number().optional()
+});
+
+const returnSchemaJoi = Joi.object({
+    reason: Joi.string().required(),
+    status: Joi.string().valid('pending', 'approved', 'rejected').default('pending')
+});
+
+const cancellationSchemaJoi = Joi.object({
+    reason: Joi.string().required()
+});
+
+const addressSchemaJoi = Joi.object({
+    street: Joi.string().required(),
+    city: Joi.string().required(),
+    state: Joi.string().required(),
+    country: Joi.string().required(),
+    zip: Joi.string().required()
+});
+
+const orderSchemaJoi = Joi.object({
+    user: Joi.string().required(),
+    items: Joi.array().items(orderItemSchemaJoi).required(),
+    totalPrice: Joi.number().required(),
+    status: Joi.string().valid('pending', 'shipped', 'cancelled', 'confirmed', 'delivered').default('pending'),
+    cancellation: cancellationSchemaJoi.optional(),
+    return: returnSchemaJoi.optional(),
+    address: addressSchemaJoi.required()
+});
+
+export const validateOrder = (data: unknown) => {
+    return orderSchemaJoi.validate(data);
+}

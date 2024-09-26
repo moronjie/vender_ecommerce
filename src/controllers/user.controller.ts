@@ -50,7 +50,7 @@ export const getAllUsers = async (req: Request, res: Response, next: NextFunctio
 export const updateUser = async (req: AuthReq, res: Response, next: NextFunction) => {
     try {
 
-        if(req.user && req.user._id.toString() !== req.params.id) return next(customError("you are not authorized to update this user", 401))
+        if(req.user?._id.toString() && req.user._id.toString() !== req.params.id) return next(customError("you are not authorized to update this user", 401))
 
         const user = await User.findByIdAndUpdate(req.params.id, req.body, { new: true }).select('-password')
         res.status(200).json({
@@ -67,7 +67,7 @@ export const updateUser = async (req: AuthReq, res: Response, next: NextFunction
 // delete a user 
 export const deleteUser = async (req: AuthReq, res: Response, next: NextFunction) => {
     try {
-        if(req.user && req.user._id.toString() !== req.params.id) return next(customError("you are not authorized to update this user", 401))
+        if(req.user?._id.toString() && req.user._id.toString() !== req.params.id) return next(customError("you are not authorized to update this user", 401))
         
         await User.findByIdAndDelete(req.params.id)
 
